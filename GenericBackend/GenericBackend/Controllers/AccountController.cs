@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Web.Http;
 using GenericBackend.Core.Utils;
 using GenericBackend.Identity;
@@ -19,11 +20,20 @@ namespace GenericBackend.Controllers
             _userManager = new ApplicationUserManager(new UserStore<IdentityUser>(MongoUtil<IdentityUser>.GetDefaultConnectionString()));
         }
 
+        [HttpGet]
+        [Authorize]
+        public async Task<IHttpActionResult> Get()
+        {
+            
+            return Ok(UserModel.GetUserInfo(User));
+        }
         [HttpPost]
         [Route("registration")]
         public async Task<IHttpActionResult> Registration([FromBody]RegistrationModel model)
         {
-            var identityUser = new IdentityUser {UserName = model.Email};
+            var roles = new List<string>();
+            //roles.Add("SuperUser");
+            var identityUser = new IdentityUser {UserName = model.Email, Roles = roles};
 
             var result = await _userManager.CreateAsync(identityUser, model.Password);
 
