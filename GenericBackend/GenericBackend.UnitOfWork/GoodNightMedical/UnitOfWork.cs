@@ -1,24 +1,21 @@
-﻿using GenericBackend.DataModels.GoodNightMedical;
+﻿using GenericBackend.DataModels.Actual;
+using GenericBackend.DataModels.Plan;
+using GenericBackend.DataModels.Total;
 using GenericBackend.Repository;
-using GenericBackend.Repository.GoodNightMedical;
+using GenericBackend.Repository.Sheets;
 
 namespace GenericBackend.UnitOfWork.GoodNightMedical
 {
     public class UnitOfWork : IUnitOfWork
     {
-        private IMongoRepository<Machine> _machines;
-        private IMongoRepository<RentOption> _rentOptions;
-        private IMongoRepository<MachineOrder> _machineOrders;
-        private IMongoRepository<Customer> _customers; 
-        private IMongoRepository<FullRentCustomer> _fullRentCustomers; 
+        private IMongoRepository<ActualSheet> _actualSheets;
+        private IMongoRepository<PlanSheet> _planSheets;
+        private IMongoRepository<TotalSheet> _totalSheets;
 
-        public IMongoRepository<Machine> Machines => _machines ?? (_machines = new MachineRepository());
+        public IMongoRepository<ActualSheet> ActualSheets => _actualSheets ?? (_actualSheets = new ActualSheetRepository());
 
-        public IMongoRepository<RentOption> RentOptions => _rentOptions ?? (_rentOptions = new RentOptionRepository());
+        public IMongoRepository<PlanSheet> PlanSheets => _planSheets ?? (_planSheets = new PlanSheetRepository());
 
-        public IMongoRepository<MachineOrder> MachineOrders => _machineOrders ?? (_machineOrders = new MachineOrderRepository());
-
-        public IMongoRepository<Customer> Customers => _customers ?? (_customers = new CustomerRepository());
-        public IMongoRepository<FullRentCustomer> FullRentCustomers => _fullRentCustomers ?? (_fullRentCustomers = new FullRentCustomerRepository());
+        public IMongoRepository<TotalSheet> TotalSheets => _totalSheets ?? (_totalSheets = new TotalSheetRepository());
     }
 }

@@ -48,16 +48,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="GoodNightMedical\Company.cs" />
-    <Compile Include="GoodNightMedical\ContactMethod.cs" />
-    <Compile Include="GoodNightMedical\Customer.cs" />
-    <Compile Include="GoodNightMedical\DoctorPrescription.cs" />
-    <Compile Include="GoodNightMedical\FullRentCustomer.cs" />
-    <Compile Include="GoodNightMedical\Machine.cs" />
-    <Compile Include="GoodNightMedical\MachineOrder.cs" />
-    <Compile Include="GoodNightMedical\RentOption.cs" />
+    <Compile Include="Actual\ActualSheet.cs" />
+    <Compile Include="Actual\ActualSheetItem.cs" />
+    <Compile Include="Actual\ActualTimelineData.cs" />
     <Compile Include="IdentityUser.cs" />
+    <Compile Include="Plan\PlanSheet.cs" />
+    <Compile Include="Plan\PlanSheetItem.cs" />
+    <Compile Include="Plan\PlanTimelineData.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Total\TotalSheet.cs" />
+    <Compile Include="Total\TotalTimelineItem.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\GenericBackend.Core\GenericBackend.Core.csproj">
