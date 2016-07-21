@@ -165,14 +165,10 @@
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\AccountController.cs" />
-    <Compile Include="Controllers\CustomerController.cs" />
     <Compile Include="Controllers\DashboardController.cs" />
     <Compile Include="Controllers\ImageController.cs" />
-    <Compile Include="Controllers\MachineController.cs" />
     <Compile Include="Images\ImageMultipartFormDataStreamProvider.cs" />
     <Compile Include="Models\DashboardViewModel.cs" />
-    <Compile Include="Models\Customer\CustomerInsert.cs" />
-    <Compile Include="Models\Customer\CustomerRentInsert.cs" />
     <Compile Include="Models\ModelBase.cs" />
     <Compile Include="Models\RegistrationModel.cs" />
     <Compile Include="Models\UserModel.cs" />
