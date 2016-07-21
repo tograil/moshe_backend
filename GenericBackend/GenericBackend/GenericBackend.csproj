@@ -186,6 +186,7 @@
     <None Include="Properties\PublishProfiles\goodnight-medical-demo - FTP.pubxml" />
     <None Include="Properties\PublishProfiles\goodnight-medical-demo - Web Deploy.pubxml" />
     <Content Include="Properties\webjobs-list.json" />
+    <None Include="Properties\PublishProfiles\vba-excel-backend.pubxml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
