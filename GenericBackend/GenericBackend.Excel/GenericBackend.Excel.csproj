@@ -9,8 +9,9 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>GenericBackend.Excel</RootNamespace>
     <AssemblyName>GenericBackend.Excel</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -47,6 +48,16 @@
   <ItemGroup>
     <Compile Include="ParsePlanActual.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\GenericBackend.Core\GenericBackend.Core.csproj">
+      <Project>{65dc52f2-95b3-44c8-8fc3-18fe04d9345c}</Project>
+      <Name>GenericBackend.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GenericBackend.DataModels\GenericBackend.DataModels.csproj">
+      <Project>{0ec52f2a-2e47-4dc5-a1f4-f66c924aa7b7}</Project>
+      <Name>GenericBackend.DataModels</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
