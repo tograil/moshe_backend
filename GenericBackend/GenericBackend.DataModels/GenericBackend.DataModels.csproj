@@ -51,6 +51,7 @@
     <Compile Include="Actual\ActualSheet.cs" />
     <Compile Include="Actual\ActualSheetItem.cs" />
     <Compile Include="Actual\ActualTimelineData.cs" />
+    <Compile Include="Document\DocumentInfo.cs" />
     <Compile Include="IdentityUser.cs" />
     <Compile Include="Plan\PlanSheet.cs" />
     <Compile Include="Plan\PlanSheetItem.cs" />
