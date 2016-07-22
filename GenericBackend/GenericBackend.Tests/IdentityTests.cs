@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using GenericBackend.Core.Utils;
-using GenericBackend.DataModels.GoodNightMedical;
 using GenericBackend.Identity;
 using GenericBackend.Identity.Core;
 using GenericBackend.Identity.Identity;
