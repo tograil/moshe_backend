@@ -166,6 +166,7 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\CustomerController.cs" />
+    <Compile Include="Controllers\FileUploadController.cs" />
     <Compile Include="Controllers\ImageController.cs" />
     <Compile Include="Controllers\MachineController.cs" />
     <Compile Include="Images\ImageMultipartFormDataStreamProvider.cs" />
@@ -190,7 +191,9 @@
       <DependentUpon>Web.config</DependentUpon>
     </None>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="App_Start\ExcelDocuments\" />
+  </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\GenericBackend.Core\GenericBackend.Core.csproj">
       <Project>{65DC52F2-95B3-44C8-8FC3-18FE04D9345C}</Project>
