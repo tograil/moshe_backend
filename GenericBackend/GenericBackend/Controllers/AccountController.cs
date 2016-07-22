@@ -3,9 +3,10 @@ using System.Threading.Tasks;
 using System.Web.Http;
 using GenericBackend.Core.Utils;
 using GenericBackend.Identity;
-using GenericBackend.Identity.Core;
+using Account = GenericBackend.Identity.Core.IdentityUser;
 using GenericBackend.Identity.Identity;
 using GenericBackend.Models;
+using GenericBackend.UnitOfWork.GoodNightMedical;
 
 namespace GenericBackend.Controllers
 {
@@ -14,10 +15,12 @@ namespace GenericBackend.Controllers
     public class AccountController : ApiController
     {
         private readonly IApplicationUserManager _userManager;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public AccountController()
+        public AccountController(IUnitOfWork unitOfWork)
         {
-            _userManager = new ApplicationUserManager(new UserStore<IdentityUser>(MongoUtil<IdentityUser>.GetDefaultConnectionString()));
+            _userManager = new ApplicationUserManager(new UserStore<Account>(MongoUtil<Account>.GetDefaultConnectionString()));
+            _unitOfWork = unitOfWork;
         }
 
         [HttpGet]
@@ -33,11 +36,19 @@ namespace GenericBackend.Controllers
         {
             var roles = new List<string>();
             //roles.Add("SuperUser");
-            var identityUser = new IdentityUser {UserName = model.Email, Roles = roles};
+            var identityUser = new Account { UserName = model.Email, Roles = roles};
 
             var result = await _userManager.CreateAsync(identityUser, model.Password);
 
             return Ok();
+        }
+
+        [HttpGet]
+        [Route("users")]
+        [Authorize(Roles = "SuperUser")]
+        public IHttpActionResult GetUsersList()
+        {
+            return Ok(_unitOfWork.Users.EndUsers());
         }
     }
 }

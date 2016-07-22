@@ -10,7 +10,8 @@ namespace GenericBackend.Controllers
 {
     public class FileUploadController : ApiController
     {
-        [HttpPost()]
+        [HttpPost]
+        [Authorize(Roles = "SuperUser")]
         public string UploadFiles()
         {
             int iUploadedCnt = 0;

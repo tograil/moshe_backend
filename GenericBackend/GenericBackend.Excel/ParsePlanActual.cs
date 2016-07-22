@@ -46,13 +46,14 @@ namespace GenericBackend.Excel
 
                 
                 var rows = sheetData.Elements<Row>().ToArray();
-                int rowIndex
+                int rowIndex = 0;
                 foreach (var row in rows)
                 {
 
                     int rowNumber = 0;
                     var planItem = new PlanSheetItem();
                     var cells = row.Descendants<Cell>();
+                    var cellIndex = 0;
                     foreach (var cell in cells)
                     {
                         var cellReference = GetCellRowColunmReferences(cell.CellReference.Value);
@@ -73,8 +74,10 @@ namespace GenericBackend.Excel
                                 break;
 
                         }
+                        cellIndex++;
                     }
                     planItems.Add(planItem);
+                    rowIndex++;
                 }
                 planSheet.PlanItems = planItems;
 
