@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.25123.0
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GenericBackend", "GenericBackend\GenericBackend.csproj", "{6525A85F-DE44-4723-AE81-C0C3095154F1}"
 EndProject
@@ -20,6 +20,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GenericBackend.Identity.Core", "GenericBackend.Identity.Core\GenericBackend.Identity.Core.csproj", "{791B2214-76B4-4332-A150-30891EBF9030}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GenericBackend.Identity", "GenericBackend.Identity\GenericBackend.Identity.csproj", "{F587A9BD-75C7-4783-B21F-F5075C7E5E78}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GenericBackend.Excel", "GenericBackend.Excel\GenericBackend.Excel.csproj", "{B0D1817F-D533-474D-A4F1-90770CA719ED}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -63,6 +65,10 @@ Global
 		{F587A9BD-75C7-4783-B21F-F5075C7E5E78}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F587A9BD-75C7-4783-B21F-F5075C7E5E78}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F587A9BD-75C7-4783-B21F-F5075C7E5E78}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B0D1817F-D533-474D-A4F1-90770CA719ED}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B0D1817F-D533-474D-A4F1-90770CA719ED}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B0D1817F-D533-474D-A4F1-90770CA719ED}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B0D1817F-D533-474D-A4F1-90770CA719ED}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
