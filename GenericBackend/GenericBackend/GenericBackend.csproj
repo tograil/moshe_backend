@@ -166,10 +166,12 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\DashboardController.cs" />
+    <Compile Include="Controllers\DocumentController.cs" />
     <Compile Include="Controllers\FileUploadController.cs" />
     <Compile Include="Controllers\ImageController.cs" />
     <Compile Include="Images\ImageMultipartFormDataStreamProvider.cs" />
     <Compile Include="Models\DashboardViewModel.cs" />
+    <Compile Include="Models\DocumentRequest.cs" />
     <Compile Include="Models\ModelBase.cs" />
     <Compile Include="Models\RegistrationModel.cs" />
     <Compile Include="Models\UserModel.cs" />
