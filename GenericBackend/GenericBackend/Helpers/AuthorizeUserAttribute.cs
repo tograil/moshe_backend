@@ -34,8 +34,10 @@ namespace GenericBackend.Helpers
                         {
                             base.OnAuthorization(actionContext);
                         }
-
-                        HandleUnauthorizedRequest(actionContext);
+                        else
+                        {
+                            HandleUnauthorizedRequest(actionContext);
+                        }
                     }
                 }
             }

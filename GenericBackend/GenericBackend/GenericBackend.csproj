@@ -180,6 +180,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="packages.config" />
+    <Content Include="App_Start\ExcelDocumentsPlanActual.xlsx" />
     <None Include="Properties\PublishProfiles\goodnight-medical-demo - FTP.pubxml" />
     <None Include="Properties\PublishProfiles\goodnight-medical-demo - Web Deploy.pubxml" />
     <Content Include="Properties\webjobs-list.json" />
@@ -202,6 +203,10 @@
     <ProjectReference Include="..\GenericBackend.DataModels\GenericBackend.DataModels.csproj">
       <Project>{0EC52F2A-2E47-4DC5-A1F4-F66C924AA7B7}</Project>
       <Name>GenericBackend.DataModels</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\GenericBackend.Excel\GenericBackend.Excel.csproj">
+      <Project>{B0D1817F-D533-474D-A4F1-90770CA719ED}</Project>
+      <Name>GenericBackend.Excel</Name>
     </ProjectReference>
     <ProjectReference Include="..\GenericBackend.Identity.Core\GenericBackend.Identity.Core.csproj">
       <Project>{791B2214-76B4-4332-A150-30891EBF9030}</Project>

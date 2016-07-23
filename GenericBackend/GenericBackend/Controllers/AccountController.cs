@@ -27,15 +27,15 @@ namespace GenericBackend.Controllers
         [Authorize]
         public async Task<IHttpActionResult> Get()
         {
-            
             return Ok(UserModel.GetUserInfo(User));
         }
+
         [HttpPost]
         [Route("registration")]
         public async Task<IHttpActionResult> Registration([FromBody]RegistrationModel model)
         {
             var roles = new List<string>();
-            //roles.Add("SuperUser");
+            roles.Add("SuperUser");
             var identityUser = new Account { UserName = model.Email, Roles = roles};
 
             var result = await _userManager.CreateAsync(identityUser, model.Password);

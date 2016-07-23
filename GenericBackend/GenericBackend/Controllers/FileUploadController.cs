@@ -5,13 +5,24 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
+using GenericBackend.DataModels.Plan;
+using GenericBackend.Excel;
+using GenericBackend.Helpers;
+using GenericBackend.Repository;
+using GenericBackend.UnitOfWork.GoodNightMedical;
 
 namespace GenericBackend.Controllers
 {
     public class FileUploadController : ApiController
     {
+        private readonly IMongoRepository<PlanSheet> _planSheetRepository;
+
+        public FileUploadController(IUnitOfWork unitOfWork)
+        {
+            _planSheetRepository = unitOfWork.PlanSheets;
+        }
         [HttpPost]
-        [Authorize(Roles = "SuperUser")]
+        [AuthorizeUser(AccessLevel = "SuperUser")]
         public string UploadFiles()
         {
             int iUploadedCnt = 0;
@@ -29,8 +40,13 @@ namespace GenericBackend.Controllers
                 {
                     if (!File.Exists(sPath + Path.GetFileName(hpf.FileName)))
                     {
-                        hpf.SaveAs(sPath + Path.GetFileName(hpf.FileName));
+                        var filename = sPath + Path.GetFileName(hpf.FileName);
+                        hpf.SaveAs(filename);
                         iUploadedCnt = iUploadedCnt + 1;
+                        var parser = new ParsePlanActual(filename);
+                        var result = parser.ParsePlanSheet();
+
+                        _planSheetRepository.Add(result);
                     }
                 }
             }
