@@ -97,6 +97,10 @@
       <Project>{7FD7B97D-640C-4BF1-B6DA-61C68988E59F}</Project>
       <Name>GenericBackend.Repository</Name>
     </ProjectReference>
+    <ProjectReference Include="..\GenericBackend.UnitOfWork\GenericBackend.UnitOfWork.csproj">
+      <Project>{06319B10-E96A-4070-85BC-59505469CBDC}</Project>
+      <Name>GenericBackend.UnitOfWork</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

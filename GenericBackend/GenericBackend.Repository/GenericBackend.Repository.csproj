@@ -62,6 +62,7 @@
   <ItemGroup>
     <Compile Include="Admin\AuthRepository.cs" />
     <Compile Include="Admin\UserRepository.cs" />
+    <Compile Include="Documents\DocumentInfoRepository.cs" />
     <Compile Include="IMongoRepository.cs" />
     <Compile Include="IRepository.cs" />
     <Compile Include="MongoRepository.cs" />
