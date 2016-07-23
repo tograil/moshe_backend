@@ -52,6 +52,12 @@ namespace GenericBackend.Excel
                     var planItem = new PlanSheetItem();
                     var cells = row.Descendants<Cell>().ToArray();
                     var cellIndex = 0;
+                    var years = new Dictionary<string, Tuple<int, int>>();
+                    if(rowNumber==0)
+                    {
+                        ParseYears(row);
+                        continue;
+                    }
                     
                     for (int i = 0; i < cells.Count(); i++)
                     {
@@ -150,7 +156,11 @@ namespace GenericBackend.Excel
             return planSheet;
         }
 
-       
+        private IEnumerable<string> ParseYears(Row row)
+        {
+            return null;
+        }
+
         private static void ParsePlanItems(List<PlanSheetItem> planItems, SpreadsheetDocument document, Cell cell, string columnName)
         {
            

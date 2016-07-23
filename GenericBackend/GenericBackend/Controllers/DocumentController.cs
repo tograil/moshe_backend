@@ -50,5 +50,14 @@ namespace GenericBackend.Controllers
             var documentInfos = query.ToList();
             return Ok(documentInfos);
         }
+
+        [HttpGet]
+        [Route("plan/{id}")]
+        public IHttpActionResult GetDocumentPlan(string id)
+        {
+            var planData = _unitOfWork.PlanSheets.First(x => x.DocumentId == id);
+
+            return Ok(planData);
+        }
     }
 }

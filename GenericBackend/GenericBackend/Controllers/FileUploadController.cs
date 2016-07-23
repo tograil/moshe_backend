@@ -6,6 +6,8 @@ using System.Net;
 using System.Net.Http;
 using System.Web.Http;
 using GenericBackend.DataModels.Plan;
+using GenericBackend.DataModels.Actual;
+using GenericBackend.DataModels.Document;
 using GenericBackend.Excel;
 using GenericBackend.Helpers;
 using GenericBackend.Repository;
@@ -16,13 +18,16 @@ namespace GenericBackend.Controllers
     public class FileUploadController : ApiController
     {
         private readonly IMongoRepository<PlanSheet> _planSheetRepository;
+        private readonly IMongoRepository<ActualSheet> _actualSheetRepository;
+        private readonly IMongoRepository<DocumentInfo> _documentInfoRepository;
 
         public FileUploadController(IUnitOfWork unitOfWork)
         {
             _planSheetRepository = unitOfWork.PlanSheets;
+            _documentInfoRepository = unitOfWork.DocumentsInfo;
         }
         [HttpPost]
-        [AuthorizeUser(AccessLevel = "SuperUser")]
+        [AllowAnonymous]
         public string UploadFiles()
         {
             int iUploadedCnt = 0;
@@ -46,7 +51,18 @@ namespace GenericBackend.Controllers
                         var parser = new ParsePlanActual(filename);
                         var result = parser.ParsePlanSheet();
 
+                        var documentInfo = new DocumentInfo
+                        {
+                            DateOfPost = DateTime.Now,
+                            Name = hpf.FileName,
+                            Type = "PlanActual",
+                            User = "demouser@example.com"
+                        };
+
+                        result.DocumentId = documentInfo.Id;
+                        
                         _planSheetRepository.Add(result);
+                        _documentInfoRepository.Add(documentInfo);
                     }
                 }
             }
