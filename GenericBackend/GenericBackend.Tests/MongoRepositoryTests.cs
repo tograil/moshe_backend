@@ -1,4 +1,7 @@
-﻿using NUnit.Framework;
+﻿using System;
+using GenericBackend.DataModels.Document;
+using GenericBackend.Repository;
+using NUnit.Framework;
 
 namespace GenericBackend.Tests
 {
@@ -9,6 +12,36 @@ namespace GenericBackend.Tests
         public void Init()
         {
             
+        }
+        [Test]
+        public void Populate_FakeDucuments_ShouldAddDocuments()
+        {
+            var date = DateTime.UtcNow.Date.AddDays(-20);
+            var unitOfWork = new UnitOfWork.GoodNightMedical.UnitOfWork();
+
+            for (int i = 0; i < 10; i++)
+            {
+                var doc = new DocumentInfo
+                {
+                    User = "superuser@example.com",
+                    Name = "Plan " + i,
+                    Type = "Type",
+                    DateOfPost = date.AddDays(i).AddMinutes(i * 15)
+                };
+                unitOfWork.DocumentsInfo.Add(doc);
+            }
+
+            for (int i = 0; i < 10; i++)
+            {
+                var doc = new DocumentInfo
+                {
+                    User = "demouser@example.com",
+                    Name = "Report " + i,
+                    Type = "Type 2",
+                    DateOfPost = date.AddDays(i).AddMinutes(i * 20)
+                };
+                unitOfWork.DocumentsInfo.Add(doc);
+            }
         }
         [Test]
         public void Add_ForMongoDb_ShouldAddEntity_Test()
