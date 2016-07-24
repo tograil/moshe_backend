@@ -1,5 +1,7 @@
 ﻿using System;
 using GenericBackend.Core;
+using GenericBackend.DataModels.Actual;
+using GenericBackend.DataModels.Plan;
 
 namespace GenericBackend.DataModels.Document
 {
@@ -9,6 +11,8 @@ namespace GenericBackend.DataModels.Document
         public string Type { get; set; }
         public DateTime DateOfPost { get; set; }
         public string User { get; set; }
+        public PlanSheet Plan { get; set; }
+        public ActualSheet Actual { get; set; }
 
     }
 }

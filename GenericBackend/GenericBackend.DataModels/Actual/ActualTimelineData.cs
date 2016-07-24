@@ -5,11 +5,12 @@ namespace GenericBackend.DataModels.Actual
 {
     public class ActualTimelineData : MongoEntityBase
     {
-        public DateTime DateTime { get; set; }
-        public decimal Actual { get; set; }
-        public decimal UpdateActual { get; set; }
-        public decimal AccumulatedActual { get; set; }
-        public decimal AccumulatedUpdate { get; set; }
+        public int Year { get; set; }
+        public int Month { get; set; }
+        public string Actual { get; set; }
+        public string UpdateActual { get; set; }
+        public string AccumulatedActual { get; set; }
+        public string AccumulatedUpdate { get; set; }
         public string SupervisorComments { get; set; }
     }
 }

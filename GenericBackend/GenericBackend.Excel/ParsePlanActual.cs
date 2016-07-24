@@ -6,26 +6,21 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
+using GenericBackend.Core.Extensions;
+using GenericBackend.DataModels.Actual;
 using GenericBackend.DataModels.Plan;
 
 namespace GenericBackend.Excel
 {
     public class ParsePlanActual
     {
-        public const string ActualSheetName = "plan";
-        private const string TotalCellText = "TOTAL By Months";
-        private string _docPath;
+        public const string PlanSheetName = "plan";
+        public const string ActualSheetName = "actual";
+        private readonly string _docPath;
 
         public ParsePlanActual(string docPath)
         {
             _docPath = docPath;
-        }
-
-        private static Tuple<int, string> GetCellRowColunmReferences(string cellReference)
-        {
-            var match = Regex.Match(cellReference, @"([A-Z]+)(\d+)");
-
-            return new Tuple<int, string>(int.Parse(match.Groups[2].Value), match.Groups[1].Value);
         }
 
         public PlanSheet ParsePlanSheet()
@@ -35,7 +30,7 @@ namespace GenericBackend.Excel
             {
                 var sheet =
                     (Sheet)document.WorkbookPart.Workbook.GetFirstChild<Sheets>()
-                        .ChildElements.First(x => x is Sheet && ((Sheet)x).Name.Value.Equals(ActualSheetName, StringComparison.CurrentCultureIgnoreCase));
+                        .ChildElements.First(x => x is Sheet && ((Sheet)x).Name.Value.Equals(PlanSheetName, StringComparison.CurrentCultureIgnoreCase));
                 planSheet.Name = sheet.Name.Value.ToLower();
                 var planItems = new List<PlanSheetItem>();
                 
@@ -45,127 +40,183 @@ namespace GenericBackend.Excel
                 var sheetData = workSheetPart.Worksheet.ChildElements.First<SheetData>();
                 
                 var rows = sheetData.Elements<Row>().ToArray();
-                int rowIndex = 0;
-                foreach (var row in rows)
+
+                var years = ParseYears(rows[0].Descendants<Cell>().ToArray(), document, 17);
+                var monthes = ParseMonthes(rows[1].Descendants<Cell>().ToArray(), document, 17);
+                
+                foreach (var row in rows.Skip(3))
                 {
-                    int rowNumber = 0;
-                    var planItem = new PlanSheetItem();
-                    var cells = row.Descendants<Cell>().ToArray();
-                    var cellIndex = 0;
-                    var years = new Dictionary<string, Tuple<int, int>>();
-                    if(rowNumber==0)
-                    {
-                        ParseYears(row);
-                        continue;
-                    }
-                    
-                    for (int i = 0; i < cells.Count(); i++)
-                    {
-                        
-                        var cellReference = GetCellRowColunmReferences(cells[i].CellReference.Value);
-                        var cellName = cellReference.Item2;
-                        var cellNumber = cellReference.Item1;
-                        var cellValue = GetCellValue(document.WorkbookPart, cells[i]);
-                        var isEnd = string.Compare(cellValue, TotalCellText, StringComparison.OrdinalIgnoreCase) == 0;
-                        switch (cellName)
-                        {
-                            case "A":
-                                int.TryParse(cellValue, out rowNumber);
-                                break;
-                            case "E":
-                                if (rowNumber > 0 && !isEnd)
-                                {
-                                    planItem.Subject = cellValue;
-                                }
-                                break;
-                            case "J":
-                                if (rowNumber > 0)
-                                {
-                                    planItem.FirstUknknown = cellValue;
-                                }
-                                break;
-                            case "K":
-                                if (rowNumber > 0)
-                                {
-                                    planItem.SecondUknknown = cellValue;
-                                }
-                                break;
-                            case "M":
-                                if (rowNumber > 0)
-                                {
-                                    planItem.ThirdUknknown = cellValue;
-                                }
-                                break;
-                            case "N":
-                                if (rowNumber > 0)
-                                {
-                                    planItem.Nis = cellValue;
-                                }
-                                break;
-                            case "O":
-                                if (rowNumber > 0)
-                                {
-                                    planItem.CummulativePActualEachMonth = cellValue;
-                                }
-                                break;
-                            case "P":
-                                if (rowNumber > 0)
-                                {
-                                    planItem.CummulativePlan = cellValue;
-                                }
-                                break;
-                            case "Q":
-                                if (rowNumber > 0)
-                                {
-                                    planItem.Diff = cellValue;
-                                }
-                                break;
-                            case "R":
-                                if (cellNumber == 2)
-                                {
-                                    var s = GetCellValue(document.WorkbookPart, cells[i]);
-                                }
-                                if (cellNumber >= 4)
-                                {
-                                    var list = new List<PlanTimelineData>();
-                                    for (int j = cellIndex; j <= cells.Count() - 3; j= j+3)
-                                    {
-                                        var timeLine = new PlanTimelineData();
-                                        if (rowNumber > 0 && !isEnd)
-                                        {
-                                            timeLine.Plan = GetCellValue(document.WorkbookPart, cells[j]);
-                                            timeLine.AccumulatedPlan = GetCellValue(document.WorkbookPart, cells[j + 1]);
-                                            timeLine.SupervisorComments = GetCellValue(document.WorkbookPart, cells[j + 2]);
-                                        }
-
-                                        list.Add(timeLine);
-                                    }
-                                    planItem.TimelineData = list;
-                                }
-                                break;
-                        }
-                        cellIndex++;
-                    }
+                    var planItem = GetDataRow(row.Descendants<Cell>().ToArray(), document, years, monthes);
                     planItems.Add(planItem);
-                    rowIndex++;
+                    planSheet.PlanItems = planItems;
                 }
-                planSheet.PlanItems = planItems;
-
             }
             
             return planSheet;
         }
 
-        private IEnumerable<string> ParseYears(Row row)
+        public ActualSheet ParseActualSheet()
         {
-            return null;
+            var planSheet = new ActualSheet();
+            using (var document = SpreadsheetDocument.Open(_docPath, true))
+            {
+                var sheet =
+                    (Sheet)document.WorkbookPart.Workbook.GetFirstChild<Sheets>()
+                        .ChildElements.First(x => x is Sheet && ((Sheet)x).Name.Value.Equals(ActualSheetName, StringComparison.CurrentCultureIgnoreCase));
+                planSheet.Name = sheet.Name.Value.ToLower();
+                var planItems = new List<ActualSheetItem>();
+
+                var workSheetPart =
+                    (WorksheetPart)document.WorkbookPart.GetPartById(sheet.Id);
+
+                var sheetData = workSheetPart.Worksheet.ChildElements.First<SheetData>();
+
+                var rows = sheetData.Elements<Row>().ToArray();
+
+                var years = ParseActualYears(rows[0].Descendants<Cell>().ToArray(), document, 16);
+                var monthes = ParseMonthes(rows[0].Descendants<Cell>().ToArray(), document, 16);
+
+                foreach (var row in rows.Skip(2))
+                {
+                    var planItem = GetActualDataRow(row.Descendants<Cell>().ToArray(), document, years, monthes);
+                    planItems.Add(planItem);
+                    planSheet.ActualItems = planItems;
+                }
+            }
+
+            return planSheet;
         }
 
-        private static void ParsePlanItems(List<PlanSheetItem> planItems, SpreadsheetDocument document, Cell cell, string columnName)
+
+        private static PlanSheetItem GetDataRow(IReadOnlyList<Cell> cells, SpreadsheetDocument document, ICollection<int> years, ICollection<int> monthes)
         {
-           
-            
-            
+            var planItem = new PlanSheetItem
+            {
+                Subject = GetCellValue(document.WorkbookPart, cells[4]),
+                TimelineData = GetData(cells, document, 17, years, monthes)
+            };
+
+            return planItem;
+        }
+
+
+        private static ActualSheetItem GetActualDataRow(IReadOnlyList<Cell> cells, SpreadsheetDocument document, ICollection<int> years, ICollection<int> monthes)
+        {
+            var planItem = new ActualSheetItem
+            {
+                Subject = GetCellValue(document.WorkbookPart, cells[4]),
+                TimelineData = GetActualData(cells, document, 16, years, monthes)
+            };
+
+            return planItem;
+        }
+
+        private static ICollection<PlanTimelineData> GetData(IReadOnlyList<Cell> cells, SpreadsheetDocument document, int startIndex, ICollection<int> years, ICollection<int> monthes)
+        {
+            var list = new List<PlanTimelineData>();
+
+            for (var j = startIndex; j <= cells.Count - 3; j = j + 3)
+            {
+                var timeLine = new PlanTimelineData
+                {
+                    Year = years.ElementAt(j-startIndex),
+                    Month = monthes.ElementAt(j-startIndex),
+                    Plan = GetCellValue(document.WorkbookPart, cells[j]),
+                    AccumulatedPlan = GetCellValue(document.WorkbookPart, cells[j + 1]),
+                    SupervisorComments = GetCellValue(document.WorkbookPart, cells[j + 2])
+                };
+
+                list.Add(timeLine);
+            }
+
+            return list;
+        }
+
+
+        private static ICollection<ActualTimelineData> GetActualData(IReadOnlyList<Cell> cells, SpreadsheetDocument document, int startIndex, ICollection<int> years, ICollection<int> monthes)
+        {
+            var list = new List<ActualTimelineData>();
+
+            for (var j = startIndex; j <= cells.Count - 5; j = j + 5)
+            {
+                var timeLine = new ActualTimelineData
+                {
+                    Year = years.ElementAt(j - startIndex),
+                    Month = monthes.ElementAt(j - startIndex),
+                    Actual = GetCellValue(document.WorkbookPart, cells[j]),
+                    UpdateActual = GetCellValue(document.WorkbookPart, cells[j + 1]),
+                    AccumulatedActual = GetCellValue(document.WorkbookPart, cells[j + 2]),
+                    AccumulatedUpdate = GetCellValue(document.WorkbookPart, cells[j + 3]),
+                    SupervisorComments = GetCellValue(document.WorkbookPart, cells[j + 4])
+                };
+
+                list.Add(timeLine);
+            }
+
+            return list;
+        }
+
+        private static ICollection<int> ParseActualYears(IEnumerable<Cell> cells, SpreadsheetDocument document, int startIndex)
+        {
+            var cellsData = cells.Skip(startIndex).Select(x => GetCellValue(document.WorkbookPart, x)).ToArray();
+
+            var knownCell = cellsData[0];
+
+            for (var i = 1; i < cellsData.Length; i++)
+            {
+                if (cellsData[i].IsNullOrEmpty())
+                {
+                    cellsData[i] = knownCell;
+                }
+                else
+                {
+                    knownCell = cellsData[i];
+                }
+            }
+
+            return cellsData.Select(cell => DateTime.FromOADate(double.Parse(cell)).Year).ToArray();
+        }
+
+        private static ICollection<int> ParseMonthes(IEnumerable<Cell> cells, SpreadsheetDocument document, int startIndex)
+        {
+            var cellsData = cells.Skip(startIndex).Select(x => GetCellValue(document.WorkbookPart, x)).ToArray();
+
+            var knownCell = cellsData[0];
+
+            for (var i = 1; i < cellsData.Length; i++)
+            {
+                if (cellsData[i].IsNullOrEmpty())
+                {
+                    cellsData[i] = knownCell;
+                }
+                else
+                {
+                    knownCell = cellsData[i];
+                }
+            }
+
+            return cellsData.Select(cell => DateTime.FromOADate(double.Parse(cell)).Month).ToArray();
+        }
+
+        private static ICollection<int> ParseYears(IEnumerable<Cell> cells, SpreadsheetDocument document, int startIndex)
+        {
+            var cellsData = cells.Skip(startIndex).Select(x => GetCellValue(document.WorkbookPart, x)).ToArray();
+
+            var knownCell = cellsData[0];
+
+            for(var i=1; i<cellsData.Length; i++)
+            {
+                if (cellsData[i].IsNullOrEmpty())
+                {
+                    cellsData[i] = knownCell;
+                }
+                else
+                {
+                    knownCell = cellsData[i];
+                }
+            }
+
+            return cellsData.Select(int.Parse).ToArray();
         }
 
         // Retrieve the value of a cell, given a file name, sheet name,  
@@ -173,8 +224,6 @@ namespace GenericBackend.Excel
         public static string GetCellValue(
             string addressName, WorkbookPart wbPart, Sheet theSheet)
         {
-            string value = null;
-            
             // Throw an exception if there is no sheet. 
             if (theSheet == null)
             {
@@ -192,7 +241,7 @@ namespace GenericBackend.Excel
 
             // If the cell does not exist, return an empty string. 
             //value = GetCellValue(wbPart, theCell, value);
-            return value;
+            return null;
         }
 
         private static string GetCellValue(WorkbookPart wbPart, Cell theCell)
@@ -248,25 +297,6 @@ namespace GenericBackend.Excel
                     break;
             }
             return value;
-        }
-
-        public static void Parse(string docName)
-        {
-            using (var document = SpreadsheetDocument.Open(docName, true))
-            {
-                var sheet =
-                    (Sheet)document.WorkbookPart.Workbook.GetFirstChild<Sheets>()
-                        .ChildElements.First(x => x is Sheet && ((Sheet)x).Name.Value.Equals(ActualSheetName, StringComparison.CurrentCultureIgnoreCase));
-                
-                var workSheetPart =
-                    (WorksheetPart)document.WorkbookPart.GetPartById(sheet.Id);
-                
-                var stringParts = document.WorkbookPart.GetPartsOfType<SharedStringTablePart>();
-
-                var sheetData = workSheetPart.Worksheet.ChildElements.First<SheetData>();
-                
-                var rows = sheetData.Elements<Row>();
-            }
         }
     }
 }

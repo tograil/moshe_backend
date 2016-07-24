@@ -6,6 +6,7 @@ using System.Net.Http;
 using System.Web.Http;
 using GenericBackend.DataModels.Document;
 using GenericBackend.Models;
+using GenericBackend.Models.SettingsData;
 using GenericBackend.UnitOfWork.GoodNightMedical;
 
 namespace GenericBackend.Controllers
@@ -55,9 +56,7 @@ namespace GenericBackend.Controllers
         [Route("plan/{id}")]
         public IHttpActionResult GetDocumentPlan(string id)
         {
-            var planData = _unitOfWork.PlanSheets.First(x => x.DocumentId == id);
-
-            return Ok(planData);
+            return Ok(SettingsModel.FromData(_unitOfWork.DocumentsInfo.GetById(id)));
         }
     }
 }

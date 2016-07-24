@@ -45,23 +45,23 @@ namespace GenericBackend.Controllers
                 {
                     if (!File.Exists(sPath + Path.GetFileName(hpf.FileName)))
                     {
-                        var filename = sPath + Path.GetFileName(hpf.FileName);
+                        var filename = sPath + Path.GetFileName("temp" + DateTime.Now.Millisecond + hpf.FileName);
                         hpf.SaveAs(filename);
                         iUploadedCnt = iUploadedCnt + 1;
                         var parser = new ParsePlanActual(filename);
-                        var result = parser.ParsePlanSheet();
+                        var plan = parser.ParsePlanSheet();
+                        var actual = parser.ParseActualSheet();
 
                         var documentInfo = new DocumentInfo
                         {
                             DateOfPost = DateTime.Now,
                             Name = hpf.FileName,
                             Type = "PlanActual",
-                            User = "demouser@example.com"
+                            User = "demouser@example.com",
+                            Plan = plan,
+                            Actual = actual
                         };
 
-                        result.DocumentId = documentInfo.Id;
-                        
-                        _planSheetRepository.Add(result);
                         _documentInfoRepository.Add(documentInfo);
                     }
                 }
