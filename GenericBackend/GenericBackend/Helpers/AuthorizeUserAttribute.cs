@@ -30,13 +30,20 @@ namespace GenericBackend.Helpers
                     }
                     else
                     {
-                        if (user.Roles.Contains(AccessLevel))
+                        if (AccessLevel == null)
                         {
                             base.OnAuthorization(actionContext);
                         }
                         else
                         {
-                            HandleUnauthorizedRequest(actionContext);
+                            if (user.Roles.Contains(AccessLevel))
+                            {
+                                base.OnAuthorization(actionContext);
+                            }
+                            else
+                            {
+                                HandleUnauthorizedRequest(actionContext);
+                            }
                         }
                     }
                 }

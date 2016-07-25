@@ -45,7 +45,11 @@ namespace GenericBackend.Providers
                     identity.AddClaim(new Claim(ClaimTypes.Role, role));
                 }
                 identity.AddClaim(new Claim(ClaimTypes.Name, user.UserName));
-                context.Validated(identity);
+                var props = CreateProperties(user);
+      
+                var ticket = new AuthenticationTicket(identity, props);
+
+                context.Validated(ticket);
             }
         }
 
@@ -53,9 +57,22 @@ namespace GenericBackend.Providers
         {
             IDictionary<string, string> data = new Dictionary<string, string>
             {
-                { "userName", user.UserName }
+                { "userName", user.UserName },
+                { "role", user.Roles.FirstOrDefault()}
             };
+
             return new AuthenticationProperties(data);
         }
+
+        public override Task TokenEndpoint(OAuthTokenEndpointContext context)
+        {
+            foreach (KeyValuePair<string, string> property in context.Properties.Dictionary)
+            {
+                context.AdditionalResponseParameters.Add(property.Key, property.Value);
+            }
+
+            return Task.FromResult<object>(null);
+        }
+
     }
 }
