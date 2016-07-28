@@ -9,27 +9,16 @@ using System.Web;
 using System.Web.Http;
 using GenericBackend.Core.Images;
 using GenericBackend.Excel;
+using GenericBackend.Helpers;
 using GenericBackend.Images;
 using GenericBackend.Models;
 
 namespace GenericBackend.Controllers
 {
-    [AllowAnonymous]
+    [AuthorizeUser]
     [RoutePrefix("api/dashboard")]
     public class DashboardController : ApiController
     {
-
-        [HttpGet]
-        [Route("parse")]
-        [AllowAnonymous]
-        public async Task<IHttpActionResult> Get2()
-        {
-            var userInfo = new ParsePlanActual(@"F:\Git Repositories\moshe_backend\GenericBackend\GenericBackend\App_Start\ExcelDocumentsPlanActual.xlsx");
-            userInfo.ParsePlanSheet();
-          
-            return Ok();
-        }
-
         [HttpGet]
         public async Task<IHttpActionResult> Get()
         {
@@ -40,9 +29,10 @@ namespace GenericBackend.Controllers
             };
             return Ok(model) ;
         }
+
         [HttpPost]
         [AllowAnonymous]
-       // [Authorize(Roles = UserModel.SuperuserRole)]
+        [Authorize(Roles = UserModel.SuperuserRole)]
         public async Task<IHttpActionResult> UploadFile()
         {
             // Check if the request contains multipart/form-data.

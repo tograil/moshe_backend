@@ -5,13 +5,14 @@ using System.Net;
 using System.Net.Http;
 using System.Web.Http;
 using GenericBackend.DataModels.Document;
+using GenericBackend.Helpers;
 using GenericBackend.Models;
 using GenericBackend.Models.SettingsData;
 using GenericBackend.UnitOfWork.GoodNightMedical;
 
 namespace GenericBackend.Controllers
 {
-    [AllowAnonymous]
+    [AuthorizeUser]
     [RoutePrefix("api/document")]
     public class DocumentController : ApiController
     {
@@ -40,6 +41,7 @@ namespace GenericBackend.Controllers
             _unitOfWork.DocumentsInfo.Add(doc);
             return Ok();
         }
+
         [HttpGet]
         public IHttpActionResult Get()
         {

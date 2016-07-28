@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using System.Web.Http;
 using GenericBackend.Core.Utils;
+using GenericBackend.Helpers;
 using GenericBackend.Identity;
 using Account = GenericBackend.Identity.Core.IdentityUser;
 using GenericBackend.Identity.Identity;
@@ -32,11 +33,12 @@ namespace GenericBackend.Controllers
 
         [HttpPost]
         [Route("registration")]
+        [AuthorizeUser(AccessLevel = "SuperUser")]
         public async Task<IHttpActionResult> Registration([FromBody]RegistrationModel model)
         {
             var roles = new List<string>();
-            roles.Add("SuperUser");
-            var identityUser = new Account { UserName = model.Email, Roles = roles};
+            roles.Add(model.Role);
+            var identityUser = new Account { UserName = model.UserName, Roles = roles};
 
             var result = await _userManager.CreateAsync(identityUser, model.Password);
 
