@@ -73,7 +73,10 @@ namespace GenericBackend.Models.SettingsData
 
         private static int S(string x)
         {
-            return Convert.ToInt32(Math.Round(decimal.Parse(x, NumberStyles.Any, new CultureInfo("en-US"))).ToString(new CultureInfo("en-US")));
+
+            decimal parseInt;
+
+            return decimal.TryParse(x, NumberStyles.Any, new CultureInfo("en-US"), out parseInt) ? Convert.ToInt32(Math.Round(parseInt).ToString(new CultureInfo("en-US"))) : 0;
         }
 
         private static IEnumerable<DataItem> GetPlanData(ICollection<PlanTimelineData> timelineData)

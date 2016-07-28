@@ -11,7 +11,7 @@ using GenericBackend.UnitOfWork.GoodNightMedical;
 
 namespace GenericBackend.Controllers
 {
-    [Authorize]
+    [AllowAnonymous]
     [RoutePrefix("api/document")]
     public class DocumentController : ApiController
     {
@@ -56,7 +56,15 @@ namespace GenericBackend.Controllers
         [Route("plan/{id}")]
         public IHttpActionResult GetDocumentPlan(string id)
         {
-            return Ok(SettingsModel.FromData(_unitOfWork.DocumentsInfo.GetById(id)));
+            try
+            {
+                return Ok(SettingsModel.FromData(_unitOfWork.DocumentsInfo.GetById(id)));
+            }
+            catch (Exception ex)
+            {
+                return Ok(ex.Message);
+            }
+            
         }
     }
 }
