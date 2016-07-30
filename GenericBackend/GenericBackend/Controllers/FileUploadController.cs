@@ -1,15 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Net;
-using System.Net.Http;
+using System.Threading.Tasks;
+using System.Web;
 using System.Web.Http;
 using GenericBackend.DataModels.Plan;
 using GenericBackend.DataModels.Actual;
 using GenericBackend.DataModels.Document;
 using GenericBackend.Excel;
-using GenericBackend.Helpers;
 using GenericBackend.Repository;
 using GenericBackend.UnitOfWork.GoodNightMedical;
 
@@ -29,53 +26,53 @@ namespace GenericBackend.Controllers
 
         [HttpPost]
         [AllowAnonymous]
-        public string UploadFiles()
+        public async Task<string> UploadFiles()
         {
-            int iUploadedCnt = 0;
-            
-            string sPath = "";
+
+            var hfc = HttpContext.Current.Request.Files;
+
+            return await Task.Factory.StartNew(() => ProcessUpload(hfc));
+        }
+
+        private string ProcessUpload(HttpFileCollection hfc)
+        {
+            var iUploadedCnt = 0;
+            var sPath = "";
             sPath = System.Web.Hosting.HostingEnvironment.MapPath("~/App_Start/ExcelDocuments/");
 
-            System.Web.HttpFileCollection hfc = System.Web.HttpContext.Current.Request.Files;
-            
-            for (int iCnt = 0; iCnt <= hfc.Count - 1; iCnt++)
+
+            for (var iCnt = 0; iCnt <= hfc.Count - 1; iCnt++)
             {
-                System.Web.HttpPostedFile hpf = hfc[iCnt];
+                var hpf = hfc[iCnt];
 
-                if (hpf.ContentLength > 0)
+                if (hpf.ContentLength <= 0) continue;
+                if (File.Exists(sPath + Path.GetFileName(hpf.FileName))) continue;
+                var filename = sPath + Path.GetFileName("temp" + DateTime.Now.Millisecond + hpf.FileName);
+                hpf.SaveAs(filename);
+                iUploadedCnt = iUploadedCnt + 1;
+                var parser = new ParsePlanActual(filename);
+                var plan = parser.ParsePlanSheet();
+                var actual = parser.ParseActualSheet();
+
+                var documentInfo = new DocumentInfo
                 {
-                    if (!File.Exists(sPath + Path.GetFileName(hpf.FileName)))
-                    {
-                        var filename = sPath + Path.GetFileName("temp" + DateTime.Now.Millisecond + hpf.FileName);
-                        hpf.SaveAs(filename);
-                        iUploadedCnt = iUploadedCnt + 1;
-                        var parser = new ParsePlanActual(filename);
-                        var plan = parser.ParsePlanSheet();
-                        var actual = parser.ParseActualSheet();
+                    DateOfPost = DateTime.Now,
+                    Name = hpf.FileName,
+                    Type = "PlanActual",
+                    User = "demouser@example.com",
+                    Plan = plan,
+                    Actual = actual
+                };
 
-                        var documentInfo = new DocumentInfo
-                        {
-                            DateOfPost = DateTime.Now,
-                            Name = hpf.FileName,
-                            Type = "PlanActual",
-                            User = "demouser@example.com",
-                            Plan = plan,
-                            Actual = actual
-                        };
-
-                        _documentInfoRepository.Add(documentInfo);
-                    }
-                }
+                _documentInfoRepository.Add(documentInfo);
             }
-            
+
             if (iUploadedCnt > 0)
             {
                 return iUploadedCnt + " Files Uploaded Successfully";
             }
-            else
-            {
-                return "Upload Failed";
-            }
+
+            return "Upload Failed";
         }
     }
 }

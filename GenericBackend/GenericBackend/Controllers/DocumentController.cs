@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Threading.Tasks;
 using System.Web.Http;
 using GenericBackend.DataModels.Document;
 using GenericBackend.Helpers;
@@ -43,15 +44,20 @@ namespace GenericBackend.Controllers
         }
 
         [HttpGet]
-        public IHttpActionResult Get()
+        public async Task<IHttpActionResult> Get()
+        {
+            
+            return Ok(await GetDocuments());
+        }
+
+        private Task<List<DocumentInfo>> GetDocuments()
         {
             var user = UserModel.GetUserInfo(User);
             var query = _unitOfWork.DocumentsInfo.AsQueryable();
             if (!user.IsSuperUser)
                 query = _unitOfWork.DocumentsInfo.Where(x => x.User == user.Name);
 
-            var documentInfos = query.ToList();
-            return Ok(documentInfos);
+            return Task.Factory.StartNew(() => query.ToList());
         }
 
         [HttpGet]
