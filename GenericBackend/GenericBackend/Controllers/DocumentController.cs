@@ -12,7 +12,7 @@ using GenericBackend.UnitOfWork.GoodNightMedical;
 
 namespace GenericBackend.Controllers
 {
-    [AuthorizeUser]
+    [AllowAnonymous]
     [RoutePrefix("api/document")]
     public class DocumentController : ApiController
     {

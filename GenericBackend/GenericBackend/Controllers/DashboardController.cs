@@ -15,7 +15,7 @@ using GenericBackend.Models;
 
 namespace GenericBackend.Controllers
 {
-    [AuthorizeUser]
+    [AllowAnonymous]
     [RoutePrefix("api/dashboard")]
     public class DashboardController : ApiController
     {
