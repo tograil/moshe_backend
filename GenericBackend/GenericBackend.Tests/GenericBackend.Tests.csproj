@@ -64,7 +64,6 @@
     <Compile Include="IntegrationTests\ParsePlanActualTests.cs" />
     <Compile Include="MongoRepositoryTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="SheetTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config">
