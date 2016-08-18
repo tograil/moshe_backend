@@ -1,4 +1,5 @@
-﻿using GenericBackend.Excel.Factory;
+﻿using System.Linq;
+using GenericBackend.Excel.Factory;
 using GenericBackend.Excel.Sheets;
 using GenericBackend.Excel.Tests.Utils;
 using NUnit.Framework;
@@ -31,6 +32,16 @@ namespace GenericBackend.Excel.Tests.Sheet
 
             //then
             Assert.That(resultStructure.Name, Is.EqualTo(Name.ToLowerInvariant()));
+            Assert.That(resultStructure.Years.Count(), Is.EqualTo(resultStructure.Monthes.Count()));
+            Assert.That(resultStructure.Elements.Any(), Is.True);
+            foreach (var sheetItem in resultStructure.Elements)
+            {
+                foreach (var key in sheetItem.Data.Keys)
+                {
+                    Assert.That(sheetItem.Data[key].Count, Is.EqualTo(resultStructure.Monthes.Count()));
+                }
+            }
+            
         }
 
     }

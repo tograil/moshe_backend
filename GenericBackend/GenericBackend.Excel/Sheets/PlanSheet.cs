@@ -27,29 +27,7 @@ namespace GenericBackend.Excel.Sheets
 
         protected override int ColumnStartNumber => DataStartIndex;
 
-        protected override MongoSheetData GetStructure(string name, IEnumerable<Row> rows, ICollection<int> years,
-            ICollection<int> monthes)
-        {
-            return new MongoSheetData
-            {
-                Name = name.ToLowerInvariant(),
-                Years = years,
-                Monthes = monthes,
-                Elements = GetElements(rows.ToArray())
-            };
-        }
-
-        private static IEnumerable<Cell> GetCellsFrom(IEnumerable<Row> rows, int startIndex, int rowIndex)
-        {
-            return GetCellFromRow(rows.Skip(rowIndex).First(), startIndex).ToArray();
-        }
-
-        private static IEnumerable<Cell> GetCellFromRow(OpenXmlElement row, int startIndex)
-        {
-            return row.Descendants<Cell>().Skip(startIndex);
-        }
-
-        private IEnumerable<SheetItem> GetElements(ICollection<Row> rows)
+        protected override IEnumerable<SheetItem> GetElements(ICollection<Row> rows)
         {
             var nameCells = GetCellsFrom(rows, DataStartIndex, TitlesIndex).Take(Step).Select(x => GeneralParsing.GetCellValue(WorkbookPart, x)).ToArray();
 
