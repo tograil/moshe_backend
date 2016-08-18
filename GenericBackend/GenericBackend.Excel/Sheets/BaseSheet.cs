@@ -1,16 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
-using GenericBackend.DataModels.Actual;
+using GenericBackend.Excel.Structures;
 
 namespace GenericBackend.Excel.Sheets
 {
     //Strategy pattern
-    public abstract class BaseSheet<T>
+    public abstract class BaseSheet
     {
         private readonly Sheet _sheet;
         private readonly WorksheetPart _worksheetPart;
@@ -24,15 +21,15 @@ namespace GenericBackend.Excel.Sheets
             _worksheetPart = worksheetPart;
         }
 
-        protected abstract T GetStructure(string name, IEnumerable<Row> rows, ICollection<int> years, ICollection<int> monthes);
+        protected abstract MongoSheetData GetStructure(string name, IEnumerable<Row> rows, ICollection<int> years, ICollection<int> monthes);
         
         protected abstract int ColumnStartNumber { get; }
 
-        protected abstract ICollection<int> ParseYears();
+        protected abstract ICollection<int> ParseYears(IEnumerable<Row> rows);
 
-        protected abstract ICollection<int> ParseMonthes(); 
+        protected abstract ICollection<int> ParseMonthes(IEnumerable<Row> rows); 
 
-        public T Parse()
+        public MongoSheetData Parse()
         {
 
             var name = _sheet.Name.Value.ToLower();
@@ -41,8 +38,8 @@ namespace GenericBackend.Excel.Sheets
 
             var rows = sheetData.Elements<Row>().ToArray();
 
-            var years = ParseYears();
-            var monthes = ParseYears();
+            var years = ParseYears(rows);
+            var monthes = ParseMonthes(rows);
 
             return GetStructure(name, rows, years, monthes);    
         }

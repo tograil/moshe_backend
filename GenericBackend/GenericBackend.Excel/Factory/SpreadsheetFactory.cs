@@ -9,7 +9,7 @@ namespace GenericBackend.Excel.Factory
     public class SheetFactory : IDisposable
     {
         private readonly string _docPath;
-        private SpreadsheetDocument _doc = null;
+        private readonly SpreadsheetDocument _doc = null;
 
         public SheetFactory(string path)
         {
@@ -21,7 +21,7 @@ namespace GenericBackend.Excel.Factory
             return _doc ?? SpreadsheetDocument.Open(_docPath, true);
         }
 
-        public T GetSheet<T, TU>(string sheetName, Func<Sheet, WorkbookPart, WorksheetPart, T> createSheet) where T : BaseSheet<TU>
+        public T GetSheet<T>(string sheetName, Func<Sheet, WorkbookPart, WorksheetPart, T> createSheet)
         {
             var document = GetDocument();
             

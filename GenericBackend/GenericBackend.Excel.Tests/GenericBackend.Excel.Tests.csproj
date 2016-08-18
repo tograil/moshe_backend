@@ -61,7 +61,9 @@
     <Compile Include="Utils\FilesToTests.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="FilesToParse\PlanActual.xlsx" />
+    <Content Include="FilesToParse\PlanActual.xlsx">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>

@@ -1,8 +1,5 @@
-﻿using System.Linq;
-using DocumentFormat.OpenXml.Packaging;
-using GenericBackend.Excel.Factory;
+﻿using GenericBackend.Excel.Factory;
 using GenericBackend.Excel.Sheets;
-using GenericBackend.Excel.Structures;
 using GenericBackend.Excel.Tests.Utils;
 using NUnit.Framework;
 
@@ -12,15 +9,15 @@ namespace GenericBackend.Excel.Tests.Sheet
     public class PlanSheetTests
     {
         private PlanSheet _planSheet;
+        private const string Name = "Plan";
 
         [SetUp]
         public void PrepareSheetToTest()
         {
-            var sheetFactory = new SheetFactory(FilesToTests.PlanActualFileName);
+            var sheetFactory = new SheetFactory(FilesToTests.Actual);
 
             _planSheet =
-                sheetFactory.GetSheet<PlanSheet, PlanSheetData>("Plan", 
-                (sheet, workbook, worksheet) => new PlanSheet(sheet, workbook, worksheet));
+                sheetFactory.GetSheet(Name, (sheet, workbook, worksheet) => new PlanSheet(sheet, workbook, worksheet));
         }
 
         [Test]
@@ -33,7 +30,7 @@ namespace GenericBackend.Excel.Tests.Sheet
 
 
             //then
-            Assert.That(resultStructure.Years.Any(), Is.True);
+            Assert.That(resultStructure.Name, Is.EqualTo(Name.ToLowerInvariant()));
         }
 
     }

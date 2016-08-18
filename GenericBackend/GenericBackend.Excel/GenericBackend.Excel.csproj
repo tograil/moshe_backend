@@ -52,8 +52,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Sheets\BaseSheet.cs" />
     <Compile Include="Sheets\PlanSheet.cs" />
-    <Compile Include="Structures\PlanSheetData.cs" />
-    <Compile Include="Structures\SheetData.cs" />
+    <Compile Include="Structures\MongoSheetData.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\GenericBackend.Core\GenericBackend.Core.csproj">
