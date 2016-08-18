@@ -57,7 +57,7 @@
   </Choose>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Sheet\PlanSheetTests.cs" />
+    <Compile Include="Sheet\SheetTests.cs" />
     <Compile Include="Utils\FilesToTests.cs" />
   </ItemGroup>
   <ItemGroup>

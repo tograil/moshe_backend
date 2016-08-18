@@ -9,19 +9,17 @@ using GenericBackend.Excel.Structures;
 
 namespace GenericBackend.Excel.Sheets
 {
-    public class PlanSheet : BaseSheet
+    public class ActualSheet : BaseSheet
     {
-        private const int DataStartIndex = 17;
-        private const int Step = 3;
-        private const int ItemStartIndex = 3;
-        private const int TitlesIndex = 2;
+        private const int DataStartIndex = 16;
+        private const int Step = 5;
+        private const int ItemStartIndex = 2;
+        private const int TitlesIndex = 1;
         private const int NameIndex = 4;
 
 
-        public PlanSheet(Sheet sheet, WorkbookPart workbookPart, WorksheetPart worksheetPart)
-            : base(sheet, workbookPart, worksheetPart)
+        public ActualSheet(Sheet sheet, WorkbookPart workbookPart, WorksheetPart worksheetPart) : base(sheet, workbookPart, worksheetPart)
         {
-
         }
 
         protected override int ColumnStartNumber => DataStartIndex;
@@ -35,11 +33,12 @@ namespace GenericBackend.Excel.Sheets
             foreach (var source in rows.Skip(ItemStartIndex))
             {
                 elements.Add(GetSheetItem(source, nameCells, NameIndex, DataStartIndex, Step));
-
             }
 
             return elements;
         }
+
+        
 
         protected override ICollection<int> ParseMonthes(IEnumerable<Row> rows)
         {
@@ -68,7 +67,7 @@ namespace GenericBackend.Excel.Sheets
                 }
             }
 
-            return cellsData.Select(int.Parse).Where((x, i) => (i % Step) == 0).ToArray();
+            return cellsData.Select(x => DateTime.FromOADate(int.Parse(x)).Year).Where((x, i) => (i % Step) == 0).ToArray();
         }
 
         private static IEnumerable<Cell> GetYearCells(IEnumerable<Row> rows)
@@ -78,7 +77,7 @@ namespace GenericBackend.Excel.Sheets
 
         private static IEnumerable<Cell> GetMonthCells(IEnumerable<Row> rows)
         {
-            return rows.Skip(1).First().Descendants<Cell>().ToArray();
+            return rows.First().Descendants<Cell>().ToArray();
         }
 
         private IEnumerable<int> GetMonthInts(IEnumerable<Cell> cells)
@@ -102,7 +101,5 @@ namespace GenericBackend.Excel.Sheets
 
             return cellsData.Select(int.Parse).ToArray();
         }
-
-
     }
 }

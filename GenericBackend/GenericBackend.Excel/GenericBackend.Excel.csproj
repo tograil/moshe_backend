@@ -50,6 +50,7 @@
     <Compile Include="Generic\GeneralParsing.cs" />
     <Compile Include="ParsePlanActual.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Sheets\ActualSheet.cs" />
     <Compile Include="Sheets\BaseSheet.cs" />
     <Compile Include="Sheets\PlanSheet.cs" />
     <Compile Include="Structures\MongoSheetData.cs" />

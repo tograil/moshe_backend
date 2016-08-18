@@ -3,6 +3,7 @@ using System.Linq;
 using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
+using GenericBackend.Excel.Generic;
 using GenericBackend.Excel.Structures;
 
 namespace GenericBackend.Excel.Sheets
@@ -50,6 +51,32 @@ namespace GenericBackend.Excel.Sheets
         protected static IEnumerable<Cell> GetCellFromRow(OpenXmlElement row, int startIndex)
         {
             return row.Descendants<Cell>().Skip(startIndex);
+        }
+
+        protected SheetItem GetSheetItem(OpenXmlElement source, IEnumerable<string> nameCells, int nameIndex, int dataStartIndex, int step)
+        {
+            var cells = GetCellFromRow(source, 0).ToArray();
+
+            var name = GeneralParsing.GetCellValue(WorkbookPart, cells.Skip(nameIndex).First());
+            var data = nameCells.Select(
+                (x, i) =>
+                    new
+                    {
+                        Name = x,
+                        Data =
+                            cells.Skip(dataStartIndex)
+                                .Where((y, j) => j % step == i)
+                                .Select(z => GeneralParsing.GetCellValue(WorkbookPart, z))
+                                .ToArray()
+                    }).ToDictionary(dataKey => dataKey.Name, dataCheck => dataCheck.Data);
+
+
+            var item = new SheetItem
+            {
+                Name = name,
+                Data = data
+            };
+            return item;
         }
 
         public MongoSheetData Parse()

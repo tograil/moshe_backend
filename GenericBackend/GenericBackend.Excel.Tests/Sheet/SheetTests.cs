@@ -7,7 +7,7 @@ using NUnit.Framework;
 namespace GenericBackend.Excel.Tests.Sheet
 {
     [TestFixture]
-    public class PlanSheetTests
+    public class SheetTests
     {
         private SheetFactory _sheetFactory;
         
@@ -40,6 +40,31 @@ namespace GenericBackend.Excel.Tests.Sheet
                 }
             }
             
+        }
+
+        [Test]
+        public void ActualSheetHasCorrectStructure()
+        {
+            //given
+            const string planName = "Actual";
+            var planSheet = _sheetFactory.GetSheet(planName, (sheet, workbook, worksheet) => new ActualSheet(sheet, workbook, worksheet));
+
+            //when
+            var resultStructure = planSheet.Parse();
+
+
+            //then
+            Assert.That(resultStructure.Name, Is.EqualTo(planName.ToLowerInvariant()));
+            Assert.That(resultStructure.Years.Count(), Is.EqualTo(resultStructure.Monthes.Count()));
+            Assert.That(resultStructure.Elements.Any(), Is.True);
+            foreach (var sheetItem in resultStructure.Elements)
+            {
+                foreach (var key in sheetItem.Data.Keys)
+                {
+                    Assert.That(sheetItem.Data[key].Count, Is.EqualTo(resultStructure.Monthes.Count()));
+                }
+            }
+
         }
 
     }
