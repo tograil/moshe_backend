@@ -9,29 +9,27 @@ namespace GenericBackend.Excel.Tests.Sheet
     [TestFixture]
     public class PlanSheetTests
     {
-        private PlanSheet _planSheet;
-        private const string Name = "Plan";
-
+        private SheetFactory _sheetFactory;
+        
         [SetUp]
         public void PrepareSheetToTest()
         {
-            var sheetFactory = new SheetFactory(FilesToTests.Actual);
-
-            _planSheet =
-                sheetFactory.GetSheet(Name, (sheet, workbook, worksheet) => new PlanSheet(sheet, workbook, worksheet));
+            _sheetFactory = new SheetFactory(FilesToTests.Actual);
         }
 
         [Test]
-        public void ClassReturnsCorrectStructure()
+        public void PlanSheetHasCorrectStructure()
         {
             //given
+            const string planName = "Plan";
+            var planSheet = _sheetFactory.GetSheet(planName, (sheet, workbook, worksheet) => new PlanSheet(sheet, workbook, worksheet));
 
             //when
-            var resultStructure = _planSheet.Parse();
+            var resultStructure = planSheet.Parse();
 
 
             //then
-            Assert.That(resultStructure.Name, Is.EqualTo(Name.ToLowerInvariant()));
+            Assert.That(resultStructure.Name, Is.EqualTo(planName.ToLowerInvariant()));
             Assert.That(resultStructure.Years.Count(), Is.EqualTo(resultStructure.Monthes.Count()));
             Assert.That(resultStructure.Elements.Any(), Is.True);
             foreach (var sheetItem in resultStructure.Elements)
